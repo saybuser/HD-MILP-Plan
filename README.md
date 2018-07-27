@@ -5,6 +5,14 @@ Hybrid Deep MILP Planner (HD-MILP-Plan) is a two-stage planner based on the lear
 ![alt text](./hdmilpplan.png)
 Figure 1: Visualization of the learning and planning framework presented in [1] where red circles represent action variables, blue circles represent state variables, gray circles represent the activation units and w's represent the weights of the neural network.
 
+## Improvements
+
+HD-MILP-Plan
+
+i) includes parsers for domain files that read in linear expressions of form: sum<sub>1..i..n</sub> x<sub>i</sub> ? k where ? can be <=, >= or ==. See translation folder for more details.
+
+ii) handles goal (state) constraints.
+
 ## Dependencies
 
 i) Data collection (input to training DNN): Data is collected using the RDDL-based domain simulator [5]. 
