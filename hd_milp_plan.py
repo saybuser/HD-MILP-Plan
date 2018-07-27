@@ -723,7 +723,7 @@ if __name__ == '__main__':
             bound = myargs[(arg)]
             setBounds = True
 
-    if setDomain and setInstance and setHorizon:
+    if setDomain and setInstance and setHorizon and setBounds:
         if setSparsification:
             encode_hd_milp_plan(domain, instance, int(horizon), float(sparsification), bound)
         else:
@@ -732,5 +732,7 @@ if __name__ == '__main__':
         print 'Domain is not provided.'
     elif not setInstance:
         print 'Instance is not provided.'
-    else:
+    elif not setHorizon:
         print 'Horizon is not provided.'
+    else:
+        print 'Bounding decision is not provided.'
