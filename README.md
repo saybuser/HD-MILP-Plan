@@ -1,17 +1,17 @@
 # HD-MILP-Plan
 
-Hybrid Deep MILP Planner (HD-MILP-Plan) is a two-stage planner based on the learning and planning framework [1] that (i) learns the state transition function T(s<sub>t</sub>,a<sub>t</sub>) = s<sub>t+1</sub> of a factored [2] planning problem using Densely Connected Neural Networks [3] from data, and (ii) compiles multiple copies of the learned transition function T'(...T'(T'(T'(I,a<sub>0</sub>),a<sub>1</sub>),a<sub>2</sub>)...) = G (as visualized by Figure 1) into MILP and solves it using off-the-shelf MILP solver [5]. HD-MILP-Plan can handle discrete/continuous action spaces and continuous state spaces, arbitrarily complex state transition functions, linear constraints on actions/states and linear reward functions.
+Hybrid Deep MILP Planner (HD-MILP-Plan) is a two-stage planner based on the learning and planning framework [1] that (i) learns the state transition function T(s<sub>t</sub>,a<sub>t</sub>) = s<sub>t+1</sub> of a factored [2] planning problem using Densely Connected Neural Networks [3] from data, and (ii) compiles multiple copies of the learned transition function T'(...T'(T'(T'(I,a<sub>0</sub>),a<sub>1</sub>),a<sub>2</sub>)...) = G (as visualized by Figure 1) into MILP and solves it using off-the-shelf MILP solver [4]. HD-MILP-Plan can handle discrete/continuous action spaces and continuous state spaces, arbitrarily complex state transition functions, linear constraints on actions/states and linear reward functions.
 
 ![alt text](./hdmilpplan.png)
 Figure 1: Visualization of the learning and planning framework presented in [1] where red circles represent action variables, blue circles represent state variables, gray circles represent the activation units and w's represent the weights of the neural network.
 
 ## Dependencies
 
-i) Data collection (input to training DNN): Data is collected using the RDDL-based domain simulator [6]. 
+i) Data collection (input to training DNN): Data is collected using the RDDL-based domain simulator [5]. 
 
-ii) Training DNN: The toolkit [4] is used to train DNNs. The final training parameters were recorded into dnn.txt file.
+ii) Training DNN: The toolkit [6] is used to train DNNs. The final training parameters were recorded into dnn.txt file.
 
-iii) Solver: Any off-the-shelf MILP solver works. In our paper [1], we used CPLEX solver [5].
+iii) Solver: Any off-the-shelf MILP solver works. In our paper [1], we used CPLEX solver [4].
 
 For i) any domain simulator and for ii) any DNN training toolkit works. Example dnn.txt and domain files (under translation folder) are provided for navigation, hvac and reservoir domains. Therefore to run the planner, you will only need iii).
 
@@ -36,8 +36,8 @@ If you are using HD-BLP-Plan, please cite the paper [1].
 
 [3] Gao Huang, Zhuang Liu, and Kilian Weinberger. Densely connected convolutional networks. 2016.
 
-[4] Ga Wu. [Github repository](https://github.com/wuga214/PAPER_IJCAI17_HybridPlanning_NeuralNetwork_MILP).
+[4] IBM ILOG CPLEX Optimization Studio CPLEX User's Manual, 2017.
 
-[5] IBM ILOG CPLEX Optimization Studio CPLEX User's Manual, 2017.
+[5] Scott Sanner. Relational dynamic influence diagram language (rddl): Language description. 2010.
 
-[6] Scott Sanner. Relational dynamic influence diagram language (rddl): Language description. 2010.
+[6] Ga Wu. [Github repository](https://github.com/wuga214/PAPER_IJCAI17_HybridPlanning_NeuralNetwork_MILP).
