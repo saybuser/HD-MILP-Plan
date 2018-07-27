@@ -1,0 +1,6 @@
+N00,move[$x]
+N01,move[$y]
+N02,location[$x]
+N03,location[$y]
+D30,location[$x]
+D31,location[$y]

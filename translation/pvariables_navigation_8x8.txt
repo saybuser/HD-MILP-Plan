@@ -1,0 +1,1 @@
+action_continuous: move[$x],action_continuous: move[$y],state_continuous: location[$x],state_continuous: location[$y],auxiliary_continuous: location_plus[$x],auxiliary_continuous: location_minus[$x],auxiliary_continuous: location_plus[$y],auxiliary_continuous: location_minus[$y]

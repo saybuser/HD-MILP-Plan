@@ -1,0 +1,2 @@
+location[$x],==,-5.0
+location[$y],==,-5.0
