@@ -15,7 +15,7 @@ iii) Solver: Any off-the-shelf MILP solver works. In our paper [1], we used CPLE
 
 For i) any domain simulator and for ii) any DNN training toolkit works. Example dnn.txt and domain files (under translation folder) are provided for navigation, hvac and reservoir domains. Therefore to run the planner, you will only need iii).
 
-## Running FD-BLP-Plan
+## Running HD-MILP-Plan
 
 hd_milp_plan.py -d domain -i instance -h horizon -b bound -s sparsify (optional, set to 0.0 by default)
 
@@ -23,11 +23,11 @@ Example: python hd_milp_plan.py -d navigation -i 10x10 -h 10 -b True
 
 ## Verification Task
 
-HD-BLP-Plan can also be used to verify different properties of DNNs by setting horizon -h to 1.
+HD-MILP-Plan can also be used to verify different properties of DNNs by setting horizon -h to 1.
 
 ## Citation
 
-If you are using HD-BLP-Plan, please cite the paper [1].
+If you are using HD-MILP-Plan, please cite the paper [1].
 
 ## References
 [1] Buser Say, Ga Wu, Yu Qing Zhou, and Scott Sanner. [Nonlinear hybrid planning with deep net learned transition models and mixed-integer linear programming](http://static.ijcai.org/proceedings-2017/0104.pdf). In 26th IJCAI, pages 750–756, 2017.
