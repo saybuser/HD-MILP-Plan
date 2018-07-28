@@ -67,6 +67,17 @@ def readInitial(directory):
 
     return initial
 
+def readGoal(directory):
+    
+    goals = []
+    goalsFile = open(directory,"r")
+    data = goalsFile.read().splitlines()
+    
+    for dat in data:
+        goals.append(dat.split(","))
+    
+    return goals
+
 def readMappings(directory):
     
     mappings = {}
@@ -228,6 +239,32 @@ def encode_initial_constraints(c, initial, y):
             row = [ [ literals, coefs ] ]
             c.linear_constraints.add(lin_expr=row, senses="E", rhs=[RHS])
     
+    return c
+
+def encode_goal_constraints(c, goals, y, horizon):
+    
+    for goal in goals:
+        variables = goal[:-2]
+        literals = []
+        coefs = []
+        for var in variables:
+            if var[0] == "~":
+                literals.append(y[(var[1:],horizon)])
+                coefs.append(-1.0)
+            else:
+                literals.append(y[(var,horizon)])
+                coefs.append(1.0)
+        RHS = float(goal[len(goal)-1])
+        if "<=" == goal[len(goal)-2]:
+            row = [ [ literals, coefs ] ]
+            c.linear_constraints.add(lin_expr=row, senses="L", rhs=[RHS])
+        elif ">=" == goal[len(goal)-2]:
+            row = [ [ literals, coefs ] ]
+            c.linear_constraints.add(lin_expr=row, senses="G", rhs=[RHS])
+        else:
+            row = [ [ literals, coefs ] ]
+            c.linear_constraints.add(lin_expr=row, senses="E", rhs=[RHS])
+
     return c
 
 def encode_global_constraints(c, constraints, A, S, Aux, x, y, v, horizon):
@@ -594,6 +631,7 @@ def encode_hd_milp_plan(domain, instance, horizon, sparsification, bound):
     
     inputNeurons, weights, bias, activationType = readDNN("./dnn/dnn_"+domain+"_"+instance+".txt")
     initial = readInitial("./translation/initial_"+domain+"_"+instance+".txt")
+    goal = readGoal("./translation/goal_"+domain+"_"+instance+".txt")
     constraints = readConstraints("./translation/constraints_"+domain+"_"+instance+".txt")
     A, S, Aux, A_type, S_type, Aux_type = readVariables("./translation/pvariables_"+domain+"_"+instance+".txt")
     mappings = readMappings("./translation/mappings_"+domain+"_"+instance+".txt")
@@ -620,6 +658,9 @@ def encode_hd_milp_plan(domain, instance, horizon, sparsification, bound):
 
     # Set initial state
     c = encode_initial_constraints(c, initial, y)
+
+    # Set goal state
+    c = encode_goal_constraints(c, goal, y, horizon)
 
     # Set node activations
     c = encode_activation_constraints(c, relus, bias, inputNeurons, mappings, weights, A, S, x, y, z, zPrime, bigM, horizon)
