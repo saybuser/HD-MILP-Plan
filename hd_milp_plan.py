@@ -704,24 +704,24 @@ def encode_hd_milp_plan(domain, instance, horizon, sparsification, bound):
         print("An optimal plan w.r.t. the given DNN is found:")
         
         solX = solution.get_values()
-        for s in S:
-            print("%s at time %d by %f: " % (s,0,solX[y[(s,0)]]))
+        #for s in S:
+        #    print("%s at time %d by: %f " % (s,0,solX[y[(s,0)]]))
         for t in range(horizon):
             for a in A:
-                print("%s at time %d by %f: " % (a,t,solX[x[(a,t)]]))
-            for s in S:
-                print("%s at time %d by %f: " % (s,t+1,solX[y[(s,t+1)]]))
+                print("%s at time %d by: %f " % (a,t,solX[x[(a,t)]]))
+            #for s in S:
+            #    print("%s at time %d by: %f " % (s,t+1,solX[y[(s,t+1)]]))
     elif solution.get_status() == solution.status.MIP_feasible or solution.get_status() == solution.status.MIP_abort_feasible or solution.get_status() == solution.status.MIP_time_limit_feasible or solution.get_status() == solution.status.optimal_tolerance:
         print("A plan w.r.t. the given DNN is found:")
         
         solX = solution.get_values()
-        for s in S:
-            print("%s at time %d by %f: " % (s,0,solX[y[(s,0)]]))
+        #for s in S:
+        #    print("%s at time %d by: %f " % (s,0,solX[y[(s,0)]]))
         for t in range(horizon):
             for a in A:
-                print("%s at time %d by %f: " % (a,t,solX[x[(a,t)]]))
-            for s in S:
-                print("%s at time %d by %f: " % (s,t+1,solX[y[(s,t+1)]]))
+                print("%s at time %d by: %f " % (a,t,solX[x[(a,t)]]))
+            #for s in S:
+            #    print("%s at time %d by: %f " % (s,t+1,solX[y[(s,t+1)]]))
     elif solution.get_status() == solution.status.MIP_abort_infeasible:
         print("Planning is interrupted by the user.")
     elif solution.get_status() == solution.status.MIP_time_limit_infeasible:
