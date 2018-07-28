@@ -37,13 +37,13 @@ HD-MILP-Plan can also be used to verify different properties of DNNs by setting 
 
 HD-MILP-Plan is re-written with some minor implementation differences from the original implementation including:
 
-i) the current implementation is in Python as opposed to the original implementation that was in C++,
+i) the current implementation is in Python as opposed to the original implementation that was in C++.
 
-ii) the ability to handle goal constraints (as mentioned above),
+ii) the ability to handle goal constraints (as mentioned above).
 
 iii) not connected to the RDDL simulator [5] (to connect to the RDDL simulator, you simply need to feed the first executed actions at time 0 to the rddlclient.c via console, and reduce the horizon by 1 at each iteration of the planning loop).
 
-iv) the number of parallel threads is set to 1 as opposed to 32,
+iv) the number of parallel threads is set to 1 as opposed to 32.
 
 v) there is no time limit.
 
