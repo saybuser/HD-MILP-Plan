@@ -1,0 +1,4 @@
+rlevel[$t1],==,75.0
+rlevel[$t2],==,50.0
+rlevel[$t3],==,50.0
+rlevel[$t4],==,50.0

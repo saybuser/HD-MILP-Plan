@@ -1,0 +1,16 @@
+rlevel_plus_one[$t1],-0.1
+rlevel_minus_one[$t1],-0.1
+rlevel_plus_one[$t2],-0.1
+rlevel_minus_one[$t2],-0.1
+rlevel_plus_one[$t3],-0.1
+rlevel_minus_one[$t3],-0.1
+rlevel_plus_one[$t4],-0.1
+rlevel_minus_one[$t4],-0.1
+rlevel_plus_two[$t1],-100.0
+rlevel_minus_two[$t1],-5.0
+rlevel_plus_two[$t2],-100.0
+rlevel_minus_two[$t2],-5.0
+rlevel_plus_two[$t3],-100.0
+rlevel_minus_two[$t3],-5.0
+rlevel_plus_two[$t4],-100.0
+rlevel_minus_two[$t4],-5.0
