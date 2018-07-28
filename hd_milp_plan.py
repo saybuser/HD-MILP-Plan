@@ -394,6 +394,78 @@ def encode_reward(c, reward, colnames, A, S, Aux, x, y, v, horizon):
     
     return c
 
+def initialize_strengthening_variables(c, colnames, A, S, A_lb, A_ub, S_lb, S_ub, horizon):
+    
+    VARINDEX = len(colnames)
+    
+    vartypes = ""
+    colnames = []
+    objcoefs = []
+    lbs = []
+    ubs = []
+    
+    # Create vars for each action a, time step t
+    x_plus = {}
+    x_minus = {}
+    xPrime = {}
+    for a in A:
+        for t in range(horizon):
+            if A_lb[(a,t)] < 0.0 and A_ub[(a,t)] > 0.0:
+                x_plus[(a,t)] = VARINDEX
+                colnames.append(str(x_plus[(a,t)]))
+                objcoefs.append(0.0)
+                lbs.append(0.0)
+                ubs.append(A_ub[(a,t)])
+                vartypes += "C"
+                VARINDEX += 1
+                x_minus[(a,t)] = VARINDEX
+                colnames.append(str(x_minus[(a,t)]))
+                objcoefs.append(0.0)
+                lbs.append(A_lb[(a,t)])
+                ubs.append(0.0)
+                vartypes += "C"
+                VARINDEX += 1
+                xPrime[(a,t)] = VARINDEX
+                colnames.append(str(xPrime[(a,t)]))
+                objcoefs.append(0.0)
+                lbs.append(0.0)
+                ubs.append(1.0)
+                vartypes += "B"
+                VARINDEX += 1
+
+    # Create vars for each state s, time step t
+    y_plus = {}
+    y_minus = {}
+    yPrime = {}
+    for index, s in enumerate(S):
+        for t in range(horizon+1):
+            if S_lb[(s,t)] < 0.0 and S_ub[(s,t)] > 0.0:
+                y_plus[(s,t)] = VARINDEX
+                colnames.append(str(y_plus[(s,t)]))
+                objcoefs.append(0.0)
+                lbs.append(0.0)
+                ubs.append(S_ub[(s,t)])
+                vartypes += "C"
+                VARINDEX += 1
+                y_minus[(s,t)] = VARINDEX
+                colnames.append(str(y_plus[(s,t)]))
+                objcoefs.append(0.0)
+                lbs.append(S_lb[(s,t)])
+                ubs.append(0.0)
+                vartypes += "C"
+                VARINDEX += 1
+                yPrime[(s,t)] = VARINDEX
+                colnames.append(str(yPrime[(s,t)]))
+                objcoefs.append(0.0)
+                lbs.append(0.0)
+                ubs.append(1.0)
+                vartypes += "B"
+                VARINDEX += 1
+
+    c.variables.add(types=vartypes, names=colnames, lb = lbs, ub = ubs)
+    
+    return c, x_plus, x_minus, xPrime, y_plus, y_minus, yPrime
+
 def encode_improvedbound_constraints(c, A, S, colnames, x, y, horizon):
     
     A_lb = {}
@@ -477,78 +549,6 @@ def encode_improvedbound_constraints(c, A, S, colnames, x, y, horizon):
 
     return c, A_lb, A_ub, S_lb, S_ub
 
-def initialize_strengthening_variables(c, colnames, A, S, A_lb, A_ub, S_lb, S_ub, horizon):
-    
-    VARINDEX = len(colnames)
-    
-    vartypes = ""
-    colnames = []
-    objcoefs = []
-    lbs = []
-    ubs = []
-    
-    # Create vars for each action a, time step t
-    x_plus = {}
-    x_minus = {}
-    xPrime = {}
-    for a in A:
-        for t in range(horizon):
-            if A_lb[(a,t)] < 0.0 and A_ub[(a,t)] > 0.0:
-                x_plus[(a,t)] = VARINDEX
-                colnames.append(str(x_plus[(a,t)]))
-                objcoefs.append(0.0)
-                lbs.append(0.0)
-                ubs.append(A_ub[(a,t)])
-                vartypes += "C"
-                VARINDEX += 1
-                x_minus[(a,t)] = VARINDEX
-                colnames.append(str(x_minus[(a,t)]))
-                objcoefs.append(0.0)
-                lbs.append(A_lb[(a,t)])
-                ubs.append(0.0)
-                vartypes += "C"
-                VARINDEX += 1
-                xPrime[(a,t)] = VARINDEX
-                colnames.append(str(xPrime[(a,t)]))
-                objcoefs.append(0.0)
-                lbs.append(0.0)
-                ubs.append(1.0)
-                vartypes += "B"
-                VARINDEX += 1
-
-    # Create vars for each state s, time step t
-    y_plus = {}
-    y_minus = {}
-    yPrime = {}
-    for index, s in enumerate(S):
-        for t in range(horizon+1):
-            if S_lb[(s,t)] < 0.0 and S_ub[(s,t)] > 0.0:
-                y_plus[(s,t)] = VARINDEX
-                colnames.append(str(y_plus[(s,t)]))
-                objcoefs.append(0.0)
-                lbs.append(0.0)
-                ubs.append(S_ub[(s,t)])
-                vartypes += "C"
-                VARINDEX += 1
-                y_minus[(s,t)] = VARINDEX
-                colnames.append(str(y_plus[(s,t)]))
-                objcoefs.append(0.0)
-                lbs.append(S_lb[(s,t)])
-                ubs.append(0.0)
-                vartypes += "C"
-                VARINDEX += 1
-                yPrime[(s,t)] = VARINDEX
-                colnames.append(str(yPrime[(s,t)]))
-                objcoefs.append(0.0)
-                lbs.append(0.0)
-                ubs.append(1.0)
-                vartypes += "B"
-                VARINDEX += 1
-
-    c.variables.add(types=vartypes, names=colnames, lb = lbs, ub = ubs)
-    
-    return c, x_plus, x_minus, xPrime, y_plus, y_minus, yPrime
-
 def encode_strengthened_activation_constraints(c, A, S, relus, bias, inputNeurons, mappings, weights, colnames, x, y, z, zPrime, horizon):
     
     #Set tighter bound constraints
@@ -603,7 +603,7 @@ def encode_strengthened_activation_constraints(c, A, S, relus, bias, inputNeuron
             for inp in inputNeurons[(relu)]:
                 if inp in mappings:
                     if mappings[(inp)] in A:
-                        if (A_lb[(mappings[(inp)],t)] > 0.0 and weights[(inp,relu)] > 0.0) or (A_ub[(mappings[(inp)],t)] < 0.0 and weights[(inp,relu)] < 0.0):
+                        if (A_lb[(mappings[(inp)],t)] >= 0.0 and weights[(inp,relu)] > 0.0) or (A_ub[(mappings[(inp)],t)] <= 0.0 and weights[(inp,relu)] < 0.0):
                             coefs.append(weights[(inp,relu)])
                             inputs.append(x[(mappings[(inp)],t)])
                         elif A_lb[(mappings[(inp)],t)] < 0.0 and A_ub[(mappings[(inp)],t)] > 0.0:
@@ -614,7 +614,7 @@ def encode_strengthened_activation_constraints(c, A, S, relus, bias, inputNeuron
                                 inputs.append(x_minus[(mappings[(inp)],t)])
 
                     else:
-                        if (S_lb[(mappings[(inp)],t)] > 0.0 and weights[(inp,relu)] > 0.0) or (S_ub[(mappings[(inp)],t)] < 0.0 and weights[(inp,relu)] < 0.0):
+                        if (S_lb[(mappings[(inp)],t)] >= 0.0 and weights[(inp,relu)] > 0.0) or (S_ub[(mappings[(inp)],t)] <= 0.0 and weights[(inp,relu)] < 0.0):
                             coefs.append(weights[(inp,relu)])
                             inputs.append(y[(mappings[(inp)],t)])
                         elif S_lb[(mappings[(inp)],t)] < 0.0 and S_ub[(mappings[(inp)],t)] > 0.0:
