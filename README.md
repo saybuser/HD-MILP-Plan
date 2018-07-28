@@ -41,7 +41,7 @@ i) the current implementation is in Python as opposed to the original implementa
 
 ii) the ability to handle goal constraints (as mentioned above),
 
-iii) not connected to the RDDL simulator [5] (to connect to the RDDL simulator, you simply need to feed the first executed actions at time 0 to the rddlclient.c via console).
+iii) not connected to the RDDL simulator [5] (to connect to the RDDL simulator, you simply need to feed the first executed actions at time 0 to the rddlclient.c via console, and reduce the horizon by 1 at each iteration of the planning loop).
 
 iv) the number of parallel threads is set to 1 as opposed to 32,
 
