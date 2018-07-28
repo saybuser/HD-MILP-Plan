@@ -473,6 +473,13 @@ def encode_improvedbound_constraints(c, A, S, colnames, x, y, horizon):
     S_lb = {}
     S_ub = {}
     
+    print("Preprocessing bounds.")
+    
+    c.set_log_stream(None)
+    c.set_error_stream(None)
+    c.set_warning_stream(None)
+    c.set_results_stream(None)
+    
     # Total time allocated to preprocessing
     totaltime = 50.0
     
@@ -544,8 +551,13 @@ def encode_improvedbound_constraints(c, A, S, colnames, x, y, horizon):
     # Reset search emphasis to default
     c.parameters.emphasis.mip.reset()
 
-    # Set limit on number of incumbent solutions
-    #c.parameters.mip.limits.solutions.reset()
+    # Reset optimizer log settings
+    import sys
+    
+    c.set_log_stream(sys.stdout)
+    c.set_error_stream(sys.stderr)
+    c.set_warning_stream(sys.stderr)
+    c.set_results_stream(sys.stdout)
 
     return c, A_lb, A_ub, S_lb, S_ub
 
