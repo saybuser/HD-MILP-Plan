@@ -45,7 +45,9 @@ iii) not connected to the RDDL simulator [5] (to connect to the RDDL simulator, 
 
 iv) the number of parallel threads is set to 1 as opposed to 32.
 
-v) there is no time limit.
+v) no total time limit is set for planning.
+
+vi) total time limit for preprocessing is set to a constant value (i.e. 50 seconds). Allocating more time can significantly improve your planning performance especially for DNNs with more than 1 layers.
 
 ## Citation
 
