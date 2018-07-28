@@ -27,7 +27,7 @@ For i) any domain simulator and for ii) any DNN training toolkit works. Example 
 
 hd_milp_plan.py -d domain -i instance -h horizon -b bound -s sparsify (optional, set to 0.0 by default)
 
-Example: python hd_milp_plan.py -d navigation -i 10x10 -h 10 -b True
+Example: python hd_milp_plan.py -d hvac -i 3 -h 10 -b False
 
 ## Verification Task
 
