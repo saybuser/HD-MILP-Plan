@@ -11,7 +11,7 @@ HD-MILP-Plan
 
 i) includes parsers for domain files that read in linear expressions of form: sum<sub>1..i..n</sub> x<sub>i</sub> ? k where ? can be <=, >= or ==. See translation folder for more details.
 
-ii) handles goal (state) constraints.
+ii) handles goal (state) constraints. 
 
 ## Dependencies
 
