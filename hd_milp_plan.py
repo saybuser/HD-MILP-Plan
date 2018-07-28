@@ -683,7 +683,7 @@ def encode_hd_milp_plan(domain, instance, horizon, sparsification, bound):
     
     c.solve()
 
-    c.write("hd_milp_plan.lp")
+    #c.write("hd_milp_plan.lp")
 
     solution = c.solution
     
