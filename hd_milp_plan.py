@@ -401,17 +401,20 @@ def encode_improvedbound_constraints(c, A, S, colnames, x, y, horizon):
     S_lb = {}
     S_ub = {}
     
+    # Total time allocated to preprocessing
+    totaltime = 50.0
+    
+    # Allocate time to each action per time
+    timeperstep = (totaltime/10.0)/float((horizon)*len(A))
+    
     # Set search emphasis to improving bounds
     c.parameters.emphasis.mip.set(3)
-    
-    # Set limit on number of incumbent solutions
-    #c.parameters.mip.limits.solutions.set(1)
     
     # Perform reachability on state and action variables to obtain tighter bounds
     
     for t in range(horizon):
         # Set time limit
-        c.parameters.timelimit.set(0.2)
+        c.parameters.timelimit.set(timeperstep)
         for a in A:
             objcoefs = [0.0]*len(colnames)
             objcoefs[colnames.index(str(x[(a,t)]))] = 1.0
@@ -433,9 +436,15 @@ def encode_improvedbound_constraints(c, A, S, colnames, x, y, horizon):
             #row = [ [ [x[(a,t)]], [1.0] ] ]
             #c.linear_constraints.add(lin_expr=row, senses="L", rhs=[-1.0*c.solution.MIP.get_best_objective()])
 
+    # Total time left allocated to preprocessing
+    totaltime -= timeperstep*float(horizon*len(A))
+    
+    # Allocate time to each state per time
+    timeperstep = totaltime/float((horizon+1)*len(S))
+
     for t in range(horizon+1):
         # Set time limit
-        c.parameters.timelimit.set(1.0*(t+1))
+        c.parameters.timelimit.set(timeperstep)
         for s in S:
             objcoefs = [0.0]*len(colnames)
             objcoefs[colnames.index(str(y[(s,t)]))] = 1.0
