@@ -47,7 +47,7 @@ iv) the number of parallel threads is set to 1 as opposed to 32.
 
 v) no total time limit is set for planning.
 
-vi) total time limit for preprocessing is set to a deterministic constant value (i.e. 50,000 ticks). Allocating more time can significantly improve your planning performance especially for DNNs with more than 1 layers.
+vi) total time limit for preprocessing is set to a deterministic constant value (i.e. 60,000 ticks). Allocating more time can significantly improve your planning performance especially for DNNs with more than 1 layers.
 
 ## Citation
 
