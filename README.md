@@ -9,7 +9,7 @@ Figure 1: Visualization of the learning and planning framework presented in [1] 
 
 HD-MILP-Plan
 
-i) includes parsers for domain files that read in linear expressions of form: sum<sub>1..i..n</sub> x<sub>i</sub> ? k where ? can be <=, >= or ==. See translation folder for more details.
+i) includes parsers for domain files that read in linear expressions of form: sum<sub>1..i..n</sub> a<sub>i</sub> x<sub>i</sub> ? k where ? can be <=, >= or == and a<sub>i</sub> is a constant real number. See translation folder for more details.
 
 ii) handles goal (state) constraints. 
 
