@@ -222,12 +222,11 @@ def encode_initial_constraints(c, initial, y):
         literals = []
         coefs = []
         for var in variables:
-            if var[0] == "~":
-                literals.append(y[(var[1:],0)])
-                coefs.append(-1.0)
-            else:
-                literals.append(y[(var,0)])
-                coefs.append(1.0)
+            coef = "1.0"
+            if "*" in var:
+                coef, var = var.split("*")
+            literals.append(y[(var,0)])
+            coefs.append(float(coef))
         RHS = float(init[len(init)-1])
         if "<=" == init[len(init)-2]:
             row = [ [ literals, coefs ] ]
@@ -248,12 +247,11 @@ def encode_goal_constraints(c, goals, y, horizon):
         literals = []
         coefs = []
         for var in variables:
-            if var[0] == "~":
-                literals.append(y[(var[1:],horizon)])
-                coefs.append(-1.0)
-            else:
-                literals.append(y[(var,horizon)])
-                coefs.append(1.0)
+            coef = "1.0"
+            if "*" in var:
+                coef, var = var.split("*")
+            literals.append(y[(var,horizon)])
+            coefs.append(float(coef))
         RHS = float(goal[len(goal)-1])
         if "<=" == goal[len(goal)-2]:
             row = [ [ literals, coefs ] ]
@@ -276,27 +274,18 @@ def encode_global_constraints(c, constraints, A, S, Aux, x, y, v, horizon):
             coefs = []
             if set(A).isdisjoint(variables) or t < horizon: # for the last time step, only consider constraints that include states variables-only
                 for var in variables:
-                    if var in A or var[1:] in A:
-                        if var[0] == "~":
-                            literals.append(x[(var[1:],t)])
-                            coefs.append(-1.0)
-                        else:
-                            literals.append(x[(var,t)])
-                            coefs.append(1.0)
-                    elif var in S or var[1:] in S:
-                        if var[0] == "~":
-                            literals.append(y[(var[1:],t)])
-                            coefs.append(-1.0)
-                        else:
-                            literals.append(y[(var,t)])
-                            coefs.append(1.0)
+                    coef = "1.0"
+                    if "*" in var:
+                        coef, var = var.split("*")
+                    if var in A:
+                        literals.append(x[(var,t)])
+                        coefs.append(float(coef))
+                    elif var in S:
+                        literals.append(y[(var,t)])
+                        coefs.append(float(coef))
                     else:
-                        if var[0] == "~":
-                            literals.append(v[(var[1:],t)])
-                            coefs.append(-1.0)
-                        else:
-                            literals.append(v[(var,t)])
-                            coefs.append(1.0)
+                        literals.append(v[(var,t)])
+                        coefs.append(float(coef))
                 RHS = float(constraint[len(constraint)-1])
                 if "<=" == constraint[len(constraint)-2]:
                     row = [ [ literals, coefs ] ]
@@ -374,20 +363,11 @@ def encode_reward(c, reward, colnames, A, S, Aux, x, y, v, horizon):
     for t in range(horizon):
         for var, weight in reward:
             if var in A or var[1:] in A:
-                if var[0] == "~":
-                    objcoefs[colnames.index(str(x[(var[1:],t)]))] = float(weight)
-                else:
-                    objcoefs[colnames.index(str(x[(var,t)]))] = -1.0*float(weight)
+                objcoefs[colnames.index(str(x[(var,t)]))] = -1.0*float(weight)
             elif var in S or var[1:] in S:
-                if var[0] == "~":
-                    objcoefs[colnames.index(str(y[(var[1:],t+1)]))] = float(weight)
-                else:
-                    objcoefs[colnames.index(str(y[(var,t+1)]))] = -1.0*float(weight)
+                objcoefs[colnames.index(str(y[(var,t+1)]))] = -1.0*float(weight)
             else:
-                if var[0] == "~":
-                    objcoefs[colnames.index(str(v[(var[1:],t+1)]))] = float(weight)
-                else:
-                    objcoefs[colnames.index(str(v[(var,t+1)]))] = -1.0*float(weight)
+                objcoefs[colnames.index(str(v[(var,t+1)]))] = -1.0*float(weight)
 
     for index, obj in enumerate(objcoefs):
         c.objective.set_linear([(index, obj)])
