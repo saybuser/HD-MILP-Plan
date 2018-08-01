@@ -51,6 +51,12 @@ v) no total time limit is set for planning.
 
 vi) total time limit for preprocessing is set to a deterministic constant value (i.e. 60,000 ticks). Allocating more time can significantly improve your planning performance especially for DNNs with more than 1 hidden layers.
 
+## Summary
+
+| Action Space | State Space  | DNN Type | Global Constraints  | Reward Optimization | Known Transition Functions |
+| :---:   | :-: | :-: | :-: | :-: | :-: | 
+| Discrete and Continuous | Continuous | Densely-connected DNNs with ReLU activation units | Yes, Piecewise Linear | Yes, Piecewise Linear | Yes, Piecewise Linear |
+
 ## Citation
 
 If you are using HD-MILP-Plan, please cite the paper [1].
