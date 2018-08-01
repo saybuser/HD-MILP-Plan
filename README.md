@@ -13,6 +13,8 @@ i) includes parsers for domain files that read in linear expressions of form: su
 
 ii) handles goal (state) constraints. 
 
+iii) can make use of known transition functions. See example transition files under translation folder for more details. HD-MILP-Plan will be prompted to encode known transition functions only when a strict subset of states are predicted by the DNNs. 
+
 ## Dependencies
 
 i) Data collection (input to training DNN): Data is collected using the RDDL-based domain simulator [5]. 
