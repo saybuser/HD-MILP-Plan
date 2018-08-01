@@ -725,12 +725,12 @@ def encode_hd_milp_plan(domain, instance, horizon, sparsification, bound):
         # Set strengthened activation constraints
         c = encode_strengthened_activation_constraints(c, A, S, relus, bias, inputNeurons, mappings, weights, colnames, x, y, z, zPrime, horizon)
 
-    # Reward function
-    c = encode_reward(c, reward, colnames, A, S, Aux, x, y, v, horizon)
-
     if len(outputs) < len(S):
         # Set known transition function
         c = encode_known_transitions(c, transitions, A, S, Aux, x, y, v, horizon)
+
+    # Reward function
+    c = encode_reward(c, reward, colnames, A, S, Aux, x, y, v, horizon)
 
     # Set time limit
     #c.parameters.timelimit.set(3600.0)
