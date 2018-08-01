@@ -43,13 +43,15 @@ i) the current implementation is in Python as opposed to the original implementa
 
 ii) the ability to handle goal constraints (as mentioned above).
 
-iii) not connected to the RDDL simulator [5] (to connect to the RDDL simulator, you simply need to feed the first executed actions at time 0 to the rddlclient.c via console, and reduce the horizon by 1 at each iteration of the planning loop).
+iii) the ability to handle known transition functions (as mentioned above).
 
-iv) the number of parallel threads is set to 1 as opposed to 32.
+iv) not connected to the RDDL simulator [5] (to connect to the RDDL simulator, you simply need to feed the first executed actions at time 0 to the rddlclient.c via console, and reduce the horizon by 1 at each iteration of the planning loop).
 
-v) no total time limit is set for planning.
+v) the number of parallel threads is set to 1 as opposed to 32.
 
-vi) total time limit for preprocessing is set to a deterministic constant value (i.e. 60,000 ticks). Allocating more time can significantly improve your planning performance especially for DNNs with more than 1 hidden layers.
+vi) no total time limit is set for planning.
+
+vii) total time limit for preprocessing is set to a deterministic constant value (i.e. 60,000 ticks). Allocating more time can significantly improve your planning performance especially for DNNs with more than 1 hidden layers.
 
 ## Summary
 
