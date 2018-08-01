@@ -1,0 +1,2 @@
+location[$x]',-1.0*location[$x],-1.0*move[$x],==,0
+location[$y]',-1.0*location[$y],-1.0*move[$y],==,0
