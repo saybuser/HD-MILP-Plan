@@ -101,6 +101,17 @@ def readConstraints(directory):
 
     return constraints
 
+def readTransitions(directory):
+    
+    transitions = []
+    transitionsFile = open(directory,"r")
+    data = transitionsFile.read().splitlines()
+    
+    for dat in data:
+        transitions.append(dat.split(","))
+    
+    return transitions
+
 def readReward(directory):
     
     reward = []
@@ -297,6 +308,42 @@ def encode_global_constraints(c, constraints, A, S, Aux, x, y, v, horizon):
                     row = [ [ literals, coefs ] ]
                     c.linear_constraints.add(lin_expr=row, senses="E", rhs=[RHS])
     
+    return c
+
+def encode_known_transitions(c, transitions, A, S, Aux, x, y, v, horizon):
+    
+    for t in range(horizon):
+        for transition in transitions:
+            variables = transition[:-2]
+            literals = []
+            coefs = []
+            for var in variables:
+                coef = "1.0"
+                if "*" in var:
+                    coef, var = var.split("*")
+                if var in A:
+                    literals.append(x[(var,t)])
+                    coefs.append(float(coef))
+                elif var in Aux:
+                    literals.append(v[(var,t)])
+                    coefs.append(float(coef))
+                else:
+                    if var[len(var)-1] == "'":
+                        literals.append(y[(var[:-1],t+1)])
+                    else:
+                        literals.append(y[(var,t)])
+                    coefs.append(float(coef))
+            RHS = float(transition[len(transition)-1])
+            if "<=" == transition[len(transition)-2]:
+                row = [ [ literals, coefs ] ]
+                c.linear_constraints.add(lin_expr=row, senses="L", rhs=[RHS])
+            elif ">=" == transition[len(transition)-2]:
+                row = [ [ literals, coefs ] ]
+                c.linear_constraints.add(lin_expr=row, senses="G", rhs=[RHS])
+            else:
+                row = [ [ literals, coefs ] ]
+                c.linear_constraints.add(lin_expr=row, senses="E", rhs=[RHS])
+
     return c
 
 def encode_activation_constraints(c, relus, bias, inputNeurons, mappings, weights, A, S, x, y, z, zPrime, bigM, horizon):
@@ -641,6 +688,10 @@ def encode_hd_milp_plan(domain, instance, horizon, sparsification, bound):
     relus = [relu for relu in inputNeurons.keys() if activationType[(relu)] == "relu"]
     outputs = [output for output in inputNeurons.keys() if activationType[(output)] == "regular"]
     
+    transitions = []
+    if len(outputs) < len(S):
+        transitions = readTransitions("./translation/transitions_"+domain+"_"+instance+".txt")
+    
     if sparsification > 0.0:
         weights, bias = sparsifyDNN(sparsification, weights, bias, inputNeurons, mappings, relus, outputs)
 
@@ -676,6 +727,10 @@ def encode_hd_milp_plan(domain, instance, horizon, sparsification, bound):
 
     # Reward function
     c = encode_reward(c, reward, colnames, A, S, Aux, x, y, v, horizon)
+
+    if len(outputs) < len(S):
+        # Set known transition function
+        c = encode_known_transitions(c, transitions, A, S, Aux, x, y, v, horizon)
 
     # Set time limit
     #c.parameters.timelimit.set(3600.0)
