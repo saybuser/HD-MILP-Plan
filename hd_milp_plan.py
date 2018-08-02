@@ -545,49 +545,18 @@ def encode_improvedbound_constraints(c, A, S, colnames, x, y, horizon):
     c.set_results_stream(None)
     
     # Set search emphasis to improving bounds
-    c.parameters.emphasis.mip.set(3)
+    #c.parameters.emphasis.mip.set(3)
     
     # Total deterministic time allocated to preprocessing
-    totaltime = 60000.0
+    totaltime = 30000.0
     
-    # Allocate time to each action per time
-    timepervar = (totaltime/10.0)/float(horizon*len(A))
+    # Allocate time to each var per time
+    timepervar = (totaltime)/(float(horizon*len(A)) + float((horizon+1)*len(S)))
     
     # Set deterministic time limit
     c.parameters.dettimelimit.set(timepervar)
     
     # Perform reachability on state and action variables to obtain tighter bounds
-    for t in range(horizon):
-        for a in A:
-            objcoefs = [0.0]*len(colnames)
-            objcoefs[colnames.index(str(x[(a,t)]))] = 1.0
-            for index, obj in enumerate(objcoefs):
-                c.objective.set_linear([(index, obj)])
-            c.solve()
-            A_lb[(a,t)] = c.solution.MIP.get_best_objective()
-            c.variables.set_lower_bounds([(colnames.index(str(x[(a,t)])), c.solution.MIP.get_best_objective())])
-            #row = [ [ [x[(a,t)]], [1.0] ] ]
-            #c.linear_constraints.add(lin_expr=row, senses="G", rhs=[c.solution.MIP.get_best_objective()])
-            
-            objcoefs = [0.0]*len(colnames)
-            objcoefs[colnames.index(str(x[(a,t)]))] = -1.0
-            for index, obj in enumerate(objcoefs):
-                c.objective.set_linear([(index, obj)])
-            c.solve()
-            A_ub[(a,t)] = -1.0*c.solution.MIP.get_best_objective()
-            c.variables.set_upper_bounds([(colnames.index(str(x[(a,t)])), -1.0*c.solution.MIP.get_best_objective())])
-            #row = [ [ [x[(a,t)]], [1.0] ] ]
-            #c.linear_constraints.add(lin_expr=row, senses="L", rhs=[-1.0*c.solution.MIP.get_best_objective()])
-
-    # Total time left allocated to preprocessing
-    totaltime -= timepervar*float(horizon*len(A))
-    
-    # Allocate time to each state per time
-    timepervar = totaltime/float((horizon+1)*len(S))
-
-    # Set deterministic time limit
-    c.parameters.dettimelimit.set(timepervar)
-
     for t in range(horizon+1):
         for s in S:
             objcoefs = [0.0]*len(colnames)
@@ -609,9 +578,30 @@ def encode_improvedbound_constraints(c, A, S, colnames, x, y, horizon):
             c.variables.set_upper_bounds([(colnames.index(str(y[(s,t)])), -1.0*c.solution.MIP.get_best_objective())])
             #row = [ [ [y[(s,t)]], [1.0] ] ]
             #c.linear_constraints.add(lin_expr=row, senses="L", rhs=[-1.0*c.solution.MIP.get_best_objective()])
+        if t < horizon:
+            for a in A:
+                objcoefs = [0.0]*len(colnames)
+                objcoefs[colnames.index(str(x[(a,t)]))] = 1.0
+                for index, obj in enumerate(objcoefs):
+                    c.objective.set_linear([(index, obj)])
+                c.solve()
+                A_lb[(a,t)] = c.solution.MIP.get_best_objective()
+                c.variables.set_lower_bounds([(colnames.index(str(x[(a,t)])), c.solution.MIP.get_best_objective())])
+                #row = [ [ [x[(a,t)]], [1.0] ] ]
+                #c.linear_constraints.add(lin_expr=row, senses="G", rhs=[c.solution.MIP.get_best_objective()])
+            
+                objcoefs = [0.0]*len(colnames)
+                objcoefs[colnames.index(str(x[(a,t)]))] = -1.0
+                for index, obj in enumerate(objcoefs):
+                    c.objective.set_linear([(index, obj)])
+                c.solve()
+                A_ub[(a,t)] = -1.0*c.solution.MIP.get_best_objective()
+                c.variables.set_upper_bounds([(colnames.index(str(x[(a,t)])), -1.0*c.solution.MIP.get_best_objective())])
+                #row = [ [ [x[(a,t)]], [1.0] ] ]
+                #c.linear_constraints.add(lin_expr=row, senses="L", rhs=[-1.0*c.solution.MIP.get_best_objective()])
 
     # Reset search emphasis to default
-    c.parameters.emphasis.mip.reset()
+    #c.parameters.emphasis.mip.reset()
 
     # Reset deterministic time limit
     c.parameters.dettimelimit.reset()
