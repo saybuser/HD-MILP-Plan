@@ -59,9 +59,9 @@ viii) total time limit for preprocessing is set to a deterministic constant valu
 
 ## Summary
 
-| Action Space | State Space  | DNN Type | Global Constraints  | Reward Optimization | Known Transition Functions |
-| :-: | :-: | :-: | :-: | :-: | :-: | 
-| Discrete and Continuous | Discrete and Continuous | Densely-connected DNNs with ReLU activation units | Yes, Piecewise Linear | Yes, Piecewise Linear | Yes, Piecewise Linear |
+| Action Space | State Space  | DNN Type | Global Constraints  | Reward Optimization | Known Transition Functions | Optimality Guarantee w.r.t. DNN
+| :-: | :-: | :-: | :-: | :-: | :-: | :-: |
+| Discrete and Continuous | Discrete and Continuous | Densely-connected DNNs with ReLU activation units | Yes, Piecewise Linear | Yes, Piecewise Linear | Yes, Piecewise Linear | Yes |
 
 ## Citation
 
