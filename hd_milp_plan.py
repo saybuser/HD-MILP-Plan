@@ -157,7 +157,7 @@ def readVariables(directory):
                     S_type.append("B")
                 else:
                     S.append(var.replace("state_integer: ",""))
-                    S_type.append("B")
+                    S_type.append("I")
             else:
                 if "auxiliary_continuous:" in var:
                     Aux.append(var.replace("auxiliary_continuous: ",""))
@@ -380,7 +380,7 @@ def encode_activation_constraints(c, relus, bias, inputNeurons, mappings, weight
     
     return c
 
-def encode_nextstate_constraints(c, outputs, bias, inputNeurons, mappings, weights, A, S, x, y, z, horizon):
+def encode_nextstate_constraints(c, outputs, bias, inputNeurons, mappings, weights, A, S, x, y, z, activationType, S_type, bigM, horizon):
     
     for t in range(1,horizon+1):
         for output in outputs:
@@ -398,8 +398,21 @@ def encode_nextstate_constraints(c, outputs, bias, inputNeurons, mappings, weigh
                     coefs.append(weights[(inp,output)])
                     inputs.append(z[(inp,t-1)])
         
-            row = [ [ inputs + [y[(mappings[(output)],t)]], coefs + [-1.0] ] ]
-            c.linear_constraints.add(lin_expr=row, senses="E", rhs=[RHS])
+            if activationType[(output)] == "linear" and S_type[S.index(mappings[(output)])] == "C":
+                row = [ [ inputs + [y[(mappings[(output)],t)]], coefs + [-1.0] ] ]
+                c.linear_constraints.add(lin_expr=row, senses="E", rhs=[RHS])
+            elif activationType[(output)] == "linear" and S_type[S.index(mappings[(output)])] == "I":
+                row = [ [ inputs + [y[(mappings[(output)],t)]], coefs + [-1.0] ] ]
+                c.linear_constraints.add(lin_expr=row, senses="L", rhs=[RHS + 0.5])
+                row = [ [ inputs + [y[(mappings[(output)],t)]], coefs + [-1.0] ] ]
+                c.linear_constraints.add(lin_expr=row, senses="G", rhs=[-1.0*RHS - 0.5])
+            elif activationType[(output)] == "step" and S_type[S.index(mappings[(output)])] == "B":
+                row = [ [ inputs + [y[(mappings[(output)],t)]], coefs + [-1.0*bigM] ] ]
+                c.linear_constraints.add(lin_expr=row, senses="L", rhs=[RHS])
+                row = [ [ inputs + [y[(mappings[(output)],t)]], coefs + [-1.0*bigM] ] ]
+                c.linear_constraints.add(lin_expr=row, senses="G", rhs=[RHS - bigM])
+            else:
+                print ("This activation function/state domain combination is currently not supported.")
 
     return c
 
@@ -686,7 +699,7 @@ def encode_hd_milp_plan(domain, instance, horizon, sparsification, bound):
     mappings = readMappings("./translation/mappings_"+domain+"_"+instance+".txt")
     
     relus = [relu for relu in inputNeurons.keys() if activationType[(relu)] == "relu"]
-    outputs = [output for output in inputNeurons.keys() if activationType[(output)] == "regular"]
+    outputs = [output for output in inputNeurons.keys() if activationType[(output)] == "linear" or activationType[(output)] == "step"]
     
     transitions = []
     if len(outputs) < len(S):
@@ -719,7 +732,7 @@ def encode_hd_milp_plan(domain, instance, horizon, sparsification, bound):
     c = encode_activation_constraints(c, relus, bias, inputNeurons, mappings, weights, A, S, x, y, z, zPrime, bigM, horizon)
 
     # Predict the next state using DNNs
-    c = encode_nextstate_constraints(c, outputs, bias, inputNeurons, mappings, weights, A, S, x, y, z, horizon)
+    c = encode_nextstate_constraints(c, outputs, bias, inputNeurons, mappings, weights, A, S, x, y, z, activationType, S_type, bigM, horizon)
 
     if bound == "True":
         # Set strengthened activation constraints
