@@ -69,12 +69,18 @@ def readInitial(directory):
 
 def readGoal(directory):
     
-    goals = []
-    goalsFile = open(directory,"r")
-    data = goalsFile.read().splitlines()
+    import os
     
-    for dat in data:
-        goals.append(dat.split(","))
+    goals = []
+    
+    if os.path.exists(directory):
+        goalsFile = open(directory,"r")
+        data = goalsFile.read().splitlines()
+    
+        for dat in data:
+            goals.append(dat.split(","))
+    else:
+        print("No goal file provided.")
     
     return goals
 
@@ -92,34 +98,52 @@ def readMappings(directory):
 
 def readConstraints(directory):
     
-    constraints = []
-    constraintsFile = open(directory,"r")
-    data = constraintsFile.read().splitlines()
+    import os
     
-    for dat in data:
-        constraints.append(dat.split(","))
+    constraints = []
+    
+    if os.path.exists(directory):
+        constraintsFile = open(directory,"r")
+        data = constraintsFile.read().splitlines()
+    
+        for dat in data:
+            constraints.append(dat.split(","))
+    else:
+        print("No constraint file provided.")
 
     return constraints
 
 def readTransitions(directory):
     
-    transitions = []
-    transitionsFile = open(directory,"r")
-    data = transitionsFile.read().splitlines()
+    import os
     
-    for dat in data:
-        transitions.append(dat.split(","))
+    transitions = []
+    
+    if os.path.exists(directory):
+        transitionsFile = open(directory,"r")
+        data = transitionsFile.read().splitlines()
+    
+        for dat in data:
+            transitions.append(dat.split(","))
+    else:
+        print("No known transition file provided.")
     
     return transitions
 
 def readReward(directory):
     
-    reward = []
-    rewardFile = open(directory,"r")
-    data = rewardFile.read().splitlines()
+    import os
     
-    for dat in data:
-        reward.append(dat.split(","))
+    reward = []
+    
+    if os.path.exists(directory):
+        rewardFile = open(directory,"r")
+        data = rewardFile.read().splitlines()
+    
+        for dat in data:
+            reward.append(dat.split(","))
+    else:
+        print("No reward file provided.")
     
     return reward
 
