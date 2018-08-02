@@ -1,2 +1,0 @@
-location[$x],==,3.0
-location[$y],==,3.0
