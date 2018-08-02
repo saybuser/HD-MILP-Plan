@@ -841,6 +841,8 @@ if __name__ == '__main__':
     setSparsification = False
     setBounds = False
     
+    sparsification = "0.0"
+    
     for arg in myargs:
         if arg == "-d":
             domain = myargs[(arg)]
@@ -859,10 +861,7 @@ if __name__ == '__main__':
             setBounds = True
 
     if setDomain and setInstance and setHorizon and setBounds:
-        if setSparsification:
-            encode_hd_milp_plan(domain, instance, int(horizon), float(sparsification), bound)
-        else:
-            encode_hd_milp_plan(domain, instance, int(horizon), 0.0, bound)
+        encode_hd_milp_plan(domain, instance, int(horizon), float(sparsification), bound)
     elif not setDomain:
         print 'Domain is not provided.'
     elif not setInstance:
