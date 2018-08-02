@@ -1,6 +1,6 @@
 # HD-MILP-Plan
 
-Hybrid Deep MILP Planner (HD-MILP-Plan) is a two-stage planner based on the learning and planning framework [1] that (i) learns the state transition function T(s<sub>t</sub>,a<sub>t</sub>) = s<sub>t+1</sub> of a factored [2] planning problem using Densely Connected Neural Networks [3] from data, and (ii) compiles multiple copies of the learned transition function T'(...T'(T'(T'(I,a<sub>0</sub>),a<sub>1</sub>),a<sub>2</sub>)...) = G (as visualized by Figure 1) into MILP and solves it using off-the-shelf MILP solver [4]. HD-MILP-Plan can handle discrete/continuous action spaces and continuous state spaces, arbitrarily complex state transition functions, linear constraints on actions/states and linear reward functions.
+Hybrid Deep MILP Planner (HD-MILP-Plan) is a two-stage planner based on the learning and planning framework [1] that (i) learns the state transition function T(s<sub>t</sub>,a<sub>t</sub>) = s<sub>t+1</sub> of a factored [2] planning problem using Densely Connected Neural Networks [3] from data, and (ii) compiles multiple copies of the learned transition function T'(...T'(T'(T'(I,a<sub>0</sub>),a<sub>1</sub>),a<sub>2</sub>)...) = G (as visualized by Figure 1) into MILP and solves it using off-the-shelf MILP solver [4]. HD-MILP-Plan can handle discrete/continuous action and state spaces, arbitrarily complex state transition functions, linear constraints on actions/states and linear reward functions.
 
 ![alt text](./hdmilpplan.png)
 Figure 1: Visualization of the learning and planning framework presented in [1] where red circles represent action variables, blue circles represent state variables, gray circles represent the activation units and w's represent the weights of the neural network.
@@ -13,7 +13,9 @@ i) includes parsers for domain files that read in linear expressions of form: su
 
 ii) handles goal (state) constraints. 
 
-iii) can make use of known transition functions. See example transition files under translation folder for more details. HD-MILP-Plan will be prompted to encode known transition functions only when a strict subset of states are predicted by the DNNs. 
+iii) can make use of known transition functions. See example transition files under translation folder for more details. HD-MILP-Plan will be prompted to encode known transition functions only when a strict subset of states are predicted by the DNNs.
+
+iv) can handle discrete state variables with a) boolean domains that are learned with step function, and b) integer domains that are learned with linear function. For b), the prediction value is rounded to the nearest integer during optimization.
 
 ## Dependencies
 
@@ -57,7 +59,7 @@ vii) total time limit for preprocessing is set to a deterministic constant value
 
 | Action Space | State Space  | DNN Type | Global Constraints  | Reward Optimization | Known Transition Functions |
 | :-: | :-: | :-: | :-: | :-: | :-: | 
-| Discrete and Continuous | Continuous | Densely-connected DNNs with ReLU activation units | Yes, Piecewise Linear | Yes, Piecewise Linear | Yes, Piecewise Linear |
+| Discrete and Continuous | Discrete and Continuous | Densely-connected DNNs with ReLU activation units | Yes, Piecewise Linear | Yes, Piecewise Linear | Yes, Piecewise Linear |
 
 ## Citation
 
