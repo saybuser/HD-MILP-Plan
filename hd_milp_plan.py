@@ -551,7 +551,7 @@ def encode_improvedbound_constraints(c, A, S, colnames, x, y, horizon):
     totaltime = 30000.0
     
     # Allocate time to each var per time
-    timepervar = (totaltime)/(float(horizon*len(A)) + float((horizon+1)*len(S)))
+    timepervar = (totaltime / 2.0)/(float(horizon*len(A)) + float((horizon+1)*len(S)))
     
     # Set deterministic time limit
     c.parameters.dettimelimit.set(timepervar)
