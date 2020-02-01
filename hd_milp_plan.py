@@ -275,7 +275,7 @@ def encode_initial_constraints(c, initial, y):
     
     return c
 
-def encode_goal_constraints(c, goals, y, horizon):
+def encode_goal_constraints(c, goals, S, Aux, y, v, horizon):
     
     for goal in goals:
         variables = goal[:-2]
@@ -285,8 +285,12 @@ def encode_goal_constraints(c, goals, y, horizon):
             coef = "1.0"
             if "*" in var:
                 coef, var = var.split("*")
-            literals.append(y[(var,horizon)])
-            coefs.append(float(coef))
+            if var in S:
+                literals.append(y[(var,horizon)])
+                coefs.append(float(coef))
+            else:
+                literals.append(v[(var,horizon)])
+                coefs.append(float(coef))
         RHS = float(goal[len(goal)-1])
         if "<=" == goal[len(goal)-2]:
             row = [ [ literals, coefs ] ]
@@ -302,35 +306,34 @@ def encode_goal_constraints(c, goals, y, horizon):
 
 def encode_global_constraints(c, constraints, A, S, Aux, x, y, v, horizon):
     
-    for t in range(horizon+1):
+    for t in range(horizon):
         for constraint in constraints:
             variables = constraint[:-2]
             literals = []
             coefs = []
-            if set(A).isdisjoint(variables) or t < horizon: # for the last time step, only consider constraints that include states variables-only
-                for var in variables:
-                    coef = "1.0"
-                    if "*" in var:
-                        coef, var = var.split("*")
-                    if var in A:
-                        literals.append(x[(var,t)])
-                        coefs.append(float(coef))
-                    elif var in S:
-                        literals.append(y[(var,t)])
-                        coefs.append(float(coef))
-                    else:
-                        literals.append(v[(var,t)])
-                        coefs.append(float(coef))
-                RHS = float(constraint[len(constraint)-1])
-                if "<=" == constraint[len(constraint)-2]:
-                    row = [ [ literals, coefs ] ]
-                    c.linear_constraints.add(lin_expr=row, senses="L", rhs=[RHS])
-                elif ">=" == constraint[len(constraint)-2]:
-                    row = [ [ literals, coefs ] ]
-                    c.linear_constraints.add(lin_expr=row, senses="G", rhs=[RHS])
+            for var in variables:
+                coef = "1.0"
+                if "*" in var:
+                    coef, var = var.split("*")
+                if var in A:
+                    literals.append(x[(var,t)])
+                    coefs.append(float(coef))
+                elif var in S:
+                    literals.append(y[(var,t)])
+                    coefs.append(float(coef))
                 else:
-                    row = [ [ literals, coefs ] ]
-                    c.linear_constraints.add(lin_expr=row, senses="E", rhs=[RHS])
+                    literals.append(v[(var,t)])
+                    coefs.append(float(coef))
+            RHS = float(constraint[len(constraint)-1])
+            if "<=" == constraint[len(constraint)-2]:
+                row = [ [ literals, coefs ] ]
+                c.linear_constraints.add(lin_expr=row, senses="L", rhs=[RHS])
+            elif ">=" == constraint[len(constraint)-2]:
+                row = [ [ literals, coefs ] ]
+                c.linear_constraints.add(lin_expr=row, senses="G", rhs=[RHS])
+            else:
+                row = [ [ literals, coefs ] ]
+                c.linear_constraints.add(lin_expr=row, senses="E", rhs=[RHS])
     
     return c
 
@@ -446,12 +449,18 @@ def encode_reward(c, reward, colnames, A, S, Aux, x, y, v, horizon):
     
     for t in range(horizon):
         for var, weight in reward:
-            if var in A or var[1:] in A:
+            if var in A:
                 objcoefs[colnames.index(str(x[(var,t)]))] = -1.0*float(weight)
-            elif var in S or var[1:] in S:
-                objcoefs[colnames.index(str(y[(var,t+1)]))] = -1.0*float(weight)
+            elif var in S or var[:-1] in S:
+                if var[len(var)-1] == "'":
+                    objcoefs[colnames.index(str(y[(var[:-1],t+1)]))] = -1.0*float(weight)
+                else:
+                    objcoefs[colnames.index(str(y[(var,t)]))] = -1.0*float(weight)
             else:
-                objcoefs[colnames.index(str(v[(var,t+1)]))] = -1.0*float(weight)
+                if var[len(var)-1] == "'":
+                    objcoefs[colnames.index(str(v[(var[:-1],t+1)]))] = -1.0*float(weight)
+                else:
+                    objcoefs[colnames.index(str(v[(var,t)]))] = -1.0*float(weight)
 
     for index, obj in enumerate(objcoefs):
         c.objective.set_linear([(index, obj)])
@@ -740,7 +749,7 @@ def encode_hd_milp_plan(domain, instance, horizon, sparsification, bound):
     c = encode_initial_constraints(c, initial, y)
 
     # Set goal state
-    c = encode_goal_constraints(c, goal, y, horizon)
+    c = encode_goal_constraints(c, goal, S, Aux, y, v, horizon)
 
     # Set node activations
     c = encode_activation_constraints(c, relus, bias, inputNeurons, mappings, weights, A, S, x, y, z, zPrime, bigM, horizon)
@@ -853,10 +862,10 @@ if __name__ == '__main__':
     if setDomain and setInstance and setHorizon and setBounds:
         encode_hd_milp_plan(domain, instance, int(horizon), float(sparsification), bound)
     elif not setDomain:
-        print 'Domain is not provided.'
+        print ('Domain is not provided.')
     elif not setInstance:
-        print 'Instance is not provided.'
+        print ('Instance is not provided.')
     elif not setHorizon:
-        print 'Horizon is not provided.'
+        print ('Horizon is not provided.')
     else:
-        print 'Bounding decision is not provided.'
+        print ('Bounding decision is not provided.')

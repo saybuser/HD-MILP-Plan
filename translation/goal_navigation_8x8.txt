@@ -1,0 +1,10 @@
+location[$x],>=,-4.0
+location[$y],>=,-4.0
+location[$x],<=,4.0
+location[$y],<=,4.0
+location[$x],-1.0*location_plus[$x],location_minus[$x],==,3.0
+location[$y],-1.0*location_plus[$y],location_minus[$y],==,3.0
+location_plus[$x],>=,0.0
+location_plus[$y],>=,0.0
+location_minus[$x],>=,0.0
+location_minus[$y],>=,0.0

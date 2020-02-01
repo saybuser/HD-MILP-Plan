@@ -1,4 +1,4 @@
-location_plus[$x],-1.0
-location_minus[$x],-1.0
-location_plus[$y],-1.0
-location_minus[$y],-1.0
+location_plus[$x]',-1.0
+location_minus[$x]',-1.0
+location_plus[$y]',-1.0
+location_minus[$y]',-1.0
