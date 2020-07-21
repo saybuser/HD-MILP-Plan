@@ -3,7 +3,7 @@
 Hybrid Deep MILP Planner (HD-MILP-Plan) is a two-stage planner based on the learning and planning framework [1,2] that (i) learns the state transition function T(s<sub>t</sub>,a<sub>t</sub>) = s<sub>t+1</sub> of a factored planning problem using Densely Connected Neural Networks [3] from data, and (ii) compiles multiple copies of the learned transition function T'(...T'(T'(T'(I,a<sub>0</sub>),a<sub>1</sub>),a<sub>2</sub>)...) = G (as visualized by Figure 1) into MILP and solves it using off-the-shelf MILP solver [4]. HD-MILP-Plan can handle discrete/continuous action and state spaces, arbitrarily complex state transition functions, linear constraints on actions/states and linear reward functions.
 
 ![alt text](./hdmilpplan.png)
-Figure 1: Visualization of the learning and planning framework presented in [1] where red circles represent action variables, blue circles represent state variables, gray circles represent the activation units and w's represent the weights of the neural network.
+Figure 1: Visualization of the learning and planning framework presented in [1,2] where red circles represent action variables, blue circles represent state variables, gray circles represent the activation units and w's represent the weights of the neural network.
 
 ## Improvements
 
@@ -23,7 +23,7 @@ i) Data collection (input to training DNN): Data is collected using the RDDL-bas
 
 ii) Training DNN: The toolkit [6] is used to train DNNs. The final training parameters were recorded into dnn.txt file.
 
-iii) Solver: Any off-the-shelf MILP solver works. In our paper [1], we used CPLEX solver [4].
+iii) Solver: Any off-the-shelf MILP solver works. In our papers [1,2], we used CPLEX solver [4].
 
 For i) any domain simulator and for ii) any DNN training toolkit works. Example dnn.txt and domain files (under translation folder) are provided for navigation, hvac and reservoir domains. Therefore to run the planner, you will only need iii).
 
@@ -65,7 +65,7 @@ viii) total time limit for preprocessing is set to a deterministic constant valu
 
 ## Citation
 
-If you are using HD-MILP-Plan, please cite the paper [1].
+If you are using HD-MILP-Plan, please cite the papers [1,2].
 
 ## References
 [1] Buser Say, Ga Wu, Yu Qing Zhou, and Scott Sanner. [Nonlinear hybrid planning with deep net learned transition models and mixed-integer linear programming](https://www.ijcai.org/proceedings/2017/0104.pdf). In 26th IJCAI, pages 750–756, 2017.
