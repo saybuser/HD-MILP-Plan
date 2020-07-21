@@ -1,6 +1,6 @@
 # HD-MILP-Plan
 
-Hybrid Deep MILP Planner (HD-MILP-Plan) is a two-stage planner based on the learning and planning framework [1] that (i) learns the state transition function T(s<sub>t</sub>,a<sub>t</sub>) = s<sub>t+1</sub> of a factored [2] planning problem using Densely Connected Neural Networks [3] from data, and (ii) compiles multiple copies of the learned transition function T'(...T'(T'(T'(I,a<sub>0</sub>),a<sub>1</sub>),a<sub>2</sub>)...) = G (as visualized by Figure 1) into MILP and solves it using off-the-shelf MILP solver [4]. HD-MILP-Plan can handle discrete/continuous action and state spaces, arbitrarily complex state transition functions, linear constraints on actions/states and linear reward functions.
+Hybrid Deep MILP Planner (HD-MILP-Plan) is a two-stage planner based on the learning and planning framework [1,2] that (i) learns the state transition function T(s<sub>t</sub>,a<sub>t</sub>) = s<sub>t+1</sub> of a factored planning problem using Densely Connected Neural Networks [3] from data, and (ii) compiles multiple copies of the learned transition function T'(...T'(T'(T'(I,a<sub>0</sub>),a<sub>1</sub>),a<sub>2</sub>)...) = G (as visualized by Figure 1) into MILP and solves it using off-the-shelf MILP solver [4]. HD-MILP-Plan can handle discrete/continuous action and state spaces, arbitrarily complex state transition functions, linear constraints on actions/states and linear reward functions.
 
 ![alt text](./hdmilpplan.png)
 Figure 1: Visualization of the learning and planning framework presented in [1] where red circles represent action variables, blue circles represent state variables, gray circles represent the activation units and w's represent the weights of the neural network.
@@ -70,7 +70,7 @@ If you are using HD-MILP-Plan, please cite the paper [1].
 ## References
 [1] Buser Say, Ga Wu, Yu Qing Zhou, and Scott Sanner. [Nonlinear hybrid planning with deep net learned transition models and mixed-integer linear programming](https://www.ijcai.org/proceedings/2017/0104.pdf). In 26th IJCAI, pages 750–756, 2017.
 
-[2] Craig Boutilier, Thomas Dean, and Steve Hanks. Decision-theoretic planning: Structural assumptions and computational leverage. JAIR, 11(1):1–94, 1999.
+[2] Ga Wu, Buser Say, and Scott Sanner. [Scalable Planning with Deep Neural Network Learned Transition Models](https://www.jair.org/index.php/jair/article/view/11829). JAIR, Volume 68, pages 571–606, 2020.
 
 [3] Gao Huang, Zhuang Liu, and Kilian Weinberger. Densely connected convolutional networks. 2016.
 
