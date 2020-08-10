@@ -432,7 +432,7 @@ def encode_nextstate_constraints(c, outputs, bias, inputNeurons, mappings, weigh
                 row = [ [ inputs + [y[(mappings[(output)],t)]], coefs + [-1.0] ] ]
                 c.linear_constraints.add(lin_expr=row, senses="L", rhs=[RHS + 0.5])
                 row = [ [ inputs + [y[(mappings[(output)],t)]], coefs + [-1.0] ] ]
-                c.linear_constraints.add(lin_expr=row, senses="G", rhs=[-1.0*RHS - 0.5])
+                c.linear_constraints.add(lin_expr=row, senses="G", rhs=[RHS - 0.5])
             elif activationType[(output)] == "step" and S_type[S.index(mappings[(output)])] == "B":
                 row = [ [ inputs + [y[(mappings[(output)],t)]], coefs + [-1.0*bigM] ] ]
                 c.linear_constraints.add(lin_expr=row, senses="L", rhs=[RHS])
